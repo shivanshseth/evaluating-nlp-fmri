@@ -6,6 +6,7 @@ import csv
 import os
 import nibabel
 from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.metrics import explained_variance_score
 from scipy.ndimage.filters import gaussian_filter
 
 from utils.ridge_tools import cross_val_ridge, corr
@@ -182,10 +183,10 @@ def run_class_time_CV_fmri_crossval_ridge(data, predict_feat_dict,
         weights, chosen_lambdas = cross_val_ridge(train_features,train_data, n_splits = 10, lambdas = np.array([10**i for i in range(-6,10)]), method = 'plain',do_plot = False)
 
         preds = np.dot(test_features, weights)
-        corrs[ind_num,:] = corr(preds,test_data)
+        corrs[ind_num,:] = explained_variance_score(test_data, preds)
         all_preds.append(preds)
             
-        print('fold {} completed, took {} seconds'.format(ind_num, tm.time()-start_time))
+        print('fold {} completed, took {} seconds, explained_variance_score: {}'.format(ind_num, tm.time()-start_time, np.mean(corrs[ind_num, :]**2)))
         del weights
 
     return corrs, acc, acc_std, np.vstack(all_preds), np.vstack(all_test_data)

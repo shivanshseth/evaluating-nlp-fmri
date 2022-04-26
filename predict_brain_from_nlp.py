@@ -27,9 +27,11 @@ if __name__ == '__main__':
     corrs_t, _, _, preds_t, test_t = run_class_time_CV_fmri_crossval_ridge(data,
                                                                 predict_feat_dict)
 
+    print(np.mean(corrs_t**2))
     fname = 'predict_{}_with_{}_layer_{}_len_{}'.format(args.subject, args.nlp_feat_type, args.layer, args.sequence_length)
     print('saving: {}'.format(args.output_dir + fname))
 
     np.save(args.output_dir + fname + '.npy', {'corrs_t':corrs_t,'preds_t':preds_t,'test_t':test_t})
 
     
+

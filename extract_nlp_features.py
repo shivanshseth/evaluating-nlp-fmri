@@ -1,7 +1,7 @@
 from utils.bert_utils import get_bert_layer_representations
 from utils.xl_utils import get_xl_layer_representations
-from utils.elmo_utils import get_elmo_layer_representations
-from utils.use_utils import get_use_layer_representations
+#from utils.elmo_utils import get_elmo_layer_representations
+#from utils.use_utils import get_use_layer_representations
 
 import time as tm
 import numpy as np
@@ -36,7 +36,10 @@ if __name__ == '__main__':
         # the index of the word for which to extract the representations (in the input "[CLS] word_1 ... word_n [SEP]")
         # for CLS, set to 0; for SEP set to -1; for last word set to -2
         word_ind_to_extract = -2
-        nlp_features = get_bert_layer_representations(args.sequence_length, text_array, remove_chars, word_ind_to_extract)
+        for seq_length in range(1, 20):
+            nlp_features = get_bert_layer_representations(seq_length, text_array, remove_chars, word_ind_to_extract)
+            save_layer_representations(nlp_features, args.nlp_model, seq_length, args.output_dir)
+
     elif args.nlp_model == 'transformer_xl':
         word_ind_to_extract = -1
         nlp_features = get_xl_layer_representations(args.sequence_length, text_array, remove_chars, word_ind_to_extract)
@@ -52,7 +55,6 @@ if __name__ == '__main__':
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)          
               
-    save_layer_representations(nlp_features, args.nlp_model, args.sequence_length, args.output_dir)
         
         
         
